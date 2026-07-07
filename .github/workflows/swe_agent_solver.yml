@@ -28,13 +28,15 @@ jobs:
           # Install the correct, modern package name
           uv pip install mini-swe-agent
 
+
+
       - name: Run SWE-agent End-to-End Execution
         env:
           GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          # Use 'mini' to analyze the issue and generate the PR code fix
+          # mini v2 automatically runs inside the current checked-out directory
           .venv/bin/mini \
             --model "gemini/gemini-3.5-flash" \
-            --task "Fix the issue described here: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
-            --repo-path "."
+            --yolo \
+            --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"            

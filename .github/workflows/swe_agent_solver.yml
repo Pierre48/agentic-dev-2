@@ -26,7 +26,7 @@ jobs:
           pip install uv
           uv venv .venv
           # Install the correct, modern package name
-          .venv/bin/pip install mini-swe-agent
+          uv pip install mini-swe-agent
 
       - name: Run SWE-agent End-to-End Execution
         env:

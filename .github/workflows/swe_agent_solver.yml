@@ -34,7 +34,7 @@ jobs:
           # Underlying LLM Engine Brain
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          sweagent run \
+          .venv/bin/sweagent run \
             --model_name "gemini/gemini-1.5-pro" \
             --data_path "github_issue::https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
             --repo_path "." \

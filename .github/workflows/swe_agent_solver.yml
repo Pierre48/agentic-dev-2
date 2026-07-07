@@ -1,0 +1,40 @@
+name: Autonomous Issue Solver (SWE-agent)
+
+on:
+  issues:
+    types: [assigned] # Triggers explicitly when you assign the issue
+
+jobs:
+  solve_issue:
+    # Ensure it only runs if assigned to a specific placeholder or human engineer triggers it
+    if: github.event.assignee.login == 'your-agent-trigger-handle' 
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-state: '3.11'
+
+      - name: Install Docker & SWE-agent Container Frameworks
+        run: |
+          pip install uv
+          uv pip install sweagent
+
+      - name: Run SWE-agent End-to-End Execution
+        env:
+          # Token to allow the agent to push a new git branch & open a PR
+          GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
+          # Underlying LLM Engine Brain
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          sweagent run \
+            --model_name "gemini/gemini-1.5-pro" \
+            --data_path "github_issue::https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
+            --repo_path "." \
+            --config_file "config/default_from_url.yaml"

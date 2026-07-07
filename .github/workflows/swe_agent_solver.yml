@@ -34,7 +34,7 @@ jobs:
           
           # mini-swe-agent checks these specific env vars to bypass its setup wizard
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          MINI_MODEL: "gemini/gemini-1.5-pro" 
+          MINI_MODEL: "gemini-3.5-flash" 
           
         run: |
           # We pass the task cleanly. No config wizard will trigger now!

@@ -33,7 +33,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MSWEA_CONFIGURED: true
           
         run: |
           # We pass the model directly with -m to completely skip the global config wizard
+          # echo "MSWEA_MODEL_NAME='gemini/gemini-3.5-flash'" > ~/.config/mini-swe-agent
           .venv/bin/mini -m "gemini/gemini-3.5-flash" --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"

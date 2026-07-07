@@ -24,7 +24,8 @@ jobs:
       - name: Install Docker & SWE-agent Container Frameworks
         run: |
           pip install uv
-          uv pip install --system sweagent
+          uv venv .venv
+          uv pip install  sweagent
 
       - name: Run SWE-agent End-to-End Execution
         env:

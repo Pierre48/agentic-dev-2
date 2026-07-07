@@ -1,12 +1,12 @@
-name: Autonomous Issue Solver (SWE-agent)
+name: Autonomous Issue Solver (mini-SWE-agent)
 
 on:
   issues:
-    types: [assigned] # Triggers explicitly when you assign the issue
+    types: [assigned]
 
 jobs:
   solve_issue:
-    # Ensure it only runs if assigned to a specific placeholder or human engineer triggers it
+    # Replace 'company-swe-agent' with your bot's handle or your username
     if: github.event.assignee.login == 'Pierre48' 
     runs-on: ubuntu-latest
     
@@ -19,23 +19,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-state: '3.11'
+          python-version: '3.11'
 
-      - name: Install Docker & SWE-agent Container Frameworks
+      - name: Install mini-SWE-agent Framework
         run: |
           pip install uv
           uv venv .venv
-          uv pip install  sweagent
+          # Install the correct, modern package name
+          .venv/bin/pip install mini-swe-agent
 
       - name: Run SWE-agent End-to-End Execution
         env:
-          # Token to allow the agent to push a new git branch & open a PR
           GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
-          # Underlying LLM Engine Brain
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          .venv/bin/sweagent run \
-            --model_name "gemini/gemini-1.5-pro" \
-            --data_path "github_issue::https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
-            --repo_path "." \
-            --config_file "config/default_from_url.yaml"
+          # Use 'mini' to analyze the issue and generate the PR code fix
+          .venv/bin/mini \
+            --model "gemini/gemini-3.5-flash" \
+            --task "Fix the issue described here: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}" \
+            --repo-path "."

@@ -29,23 +29,11 @@ jobs:
           uv pip install mini-swe-agent
 
 
-
-          
       - name: Run SWE-agent End-to-End Execution
         env:
           GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           
         run: |
-          # 1. Create the global configuration directory required by mini v2
-          mkdir -p /home/runner/.config/mini-swe-agent
-          
-          # 2. Seed the config file with your default model to completely silence the setup wizard
-          cat << 'EOF' > /home/runner/.config/mini-swe-agent/.env
-          MODEL=gemini/gemini-3.5-flash
-          EOF
-          
-          # 3. Execute headless now that the configuration file exists
-          .venv/bin/mini \
-            --yolo \
-            --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"          
+          # We pass the model directly with -m to completely skip the global config wizard
+          .venv/bin/mini --yolo -m "gemini/gemini-3.5-flash" --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"

@@ -28,15 +28,16 @@ jobs:
           # Install the correct, modern package name
           uv pip install mini-swe-agent
 
-
-
       - name: Run SWE-agent End-to-End Execution
         env:
           GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
+          
+          # mini-swe-agent checks these specific env vars to bypass its setup wizard
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MINI_MODEL: "gemini/gemini-1.5-pro" 
+          
         run: |
-          # mini v2 automatically runs inside the current checked-out directory
+          # We pass the task cleanly. No config wizard will trigger now!
           .venv/bin/mini \
-            --model "gemini/gemini-3.5-flash" \
             --yolo \
-            --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"            
+            --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"

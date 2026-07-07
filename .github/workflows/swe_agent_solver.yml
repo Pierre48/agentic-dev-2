@@ -7,7 +7,7 @@ on:
 jobs:
   solve_issue:
     # Ensure it only runs if assigned to a specific placeholder or human engineer triggers it
-    if: github.event.assignee.login == 'your-agent-trigger-handle' 
+    if: github.event.assignee.login == 'Pierre48' 
     runs-on: ubuntu-latest
     
     steps:

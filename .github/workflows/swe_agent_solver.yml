@@ -31,13 +31,15 @@ jobs:
       - name: Run SWE-agent End-to-End Execution
         env:
           GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
-          
-          # mini-swe-agent checks these specific env vars to bypass its setup wizard
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          MINI_MODEL: "gemini-3.5-flash" 
+          
+          # Fix 1: Add the "gemini/" provider prefix required by v2
+          MINI_MODEL: "gemini/gemini-3.5-flash" 
+          
+          # Fix 2: Explicitly tell mini-swe-agent v2 to run non-interactively
+          MINI_NON_INTERACTIVE: "true"
           
         run: |
-          # We pass the task cleanly. No config wizard will trigger now!
           .venv/bin/mini \
             --yolo \
             --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"

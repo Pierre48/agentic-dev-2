@@ -37,4 +37,4 @@ jobs:
           
         run: |
           # We pass the model directly with -m to completely skip the global config wizard
-          .venv/bin/mini -m "anthropic/claude-haiku-4-5" --yolo --non-interactive --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"
+          echo "" |.venv/bin/mini -m "anthropic/claude-haiku-4-5" --yolo --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"

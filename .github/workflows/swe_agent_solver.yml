@@ -32,9 +32,9 @@ jobs:
       - name: Run SWE-agent End-to-End Execution
         env:
           GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MSWEA_CONFIGURED: true
           
         run: |
           # We pass the model directly with -m to completely skip the global config wizard
-          .venv/bin/mini -m "gemini/gemini-3.5-flash" --yolo --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"
+          .venv/bin/mini -m "anthropic/claude-3-5-haiku-latest" --yolo --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"

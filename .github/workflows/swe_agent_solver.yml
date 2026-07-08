@@ -32,7 +32,7 @@ jobs:
       - name: Run SWE-agent End-to-End Execution
         env:
           GITHUB_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }} 
-          GEMINI_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MSWEA_CONFIGURED: true
           
         run: |

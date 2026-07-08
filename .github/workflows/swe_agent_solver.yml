@@ -21,6 +21,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Install mini-SWE-agent Framework
         run: |
           pip install uv
@@ -36,5 +41,29 @@ jobs:
           MSWEA_CONFIGURED: true
           
         run: |
-          # We pass the model directly with -m to completely skip the global config wizard
-          echo "" |.venv/bin/mini -m "anthropic/claude-haiku-4-5" --yolo --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"
+          # Créer une branche dédiée pour la correction
+          git checkout -b "fix/issue-${{ github.event.issue.number }}"
+          
+          # Lancement de l'agent (il va modifier les fichiers localement)
+          echo "" | .venv/bin/mini -m "anthropic/claude-haiku-4-5" --yolo --task "Please fix the problem outlined in this GitHub issue: https://github.com/${{ github.repository }}/issues/${{ github.event.issue.number }}"
+
+      - name: Push Changes and Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.SWE_AGENT_GITHUB_PAT }}
+        run: |
+          # On vérifie si l'agent a effectivement modifié des fichiers
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "L'agent a trouvé une solution ! Création de la PR..."
+            git add .
+            git commit -m "fix: resolve issue #${{ github.event.issue.number }} via mini-SWE-agent"
+            git push origin "fix/issue-${{ github.event.issue.number }}" --force
+            
+            # Création de la Pull Request automatique via la CLI GitHub (gh)
+            gh pr create \
+              --title "Fix #${{ github.event.issue.number }} via SWE-agent" \
+              --body "Cette PR a été générée automatiquement par mini-SWE-agent pour résoudre l'issue #${{ github.event.issue.number }}." \
+              --base main \
+              --head "fix/issue-${{ github.event.issue.number }}"
+          else
+            echo "L'agent n'a fait aucune modification."
+          fi
